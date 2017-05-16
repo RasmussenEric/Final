@@ -130,7 +130,7 @@ public class FinalServer extends JFrame
 			
 			
 			//typing "end" will end the connection
-		}while(!message.equals("Client - End") || !message.equals("Client - end"));
+		}while(!message.equals("Client - End"));
 		
 		
 		
@@ -169,23 +169,18 @@ public class FinalServer extends JFrame
 	
 	public void closeProgram()
 	{
-		Display("Shutting Down");
+		Display("\n Closing connections... \n");
 		userInput.setEditable(false);
-		//close everything
 		try
 		{
-			
 			output.close();
 			input.close();
 			connection.close();
-		
 		}
 		catch(IOException ioException)
 		{
 			ioException.printStackTrace();
 		}
-		
-		
 	}
 	
 }
