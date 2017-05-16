@@ -100,6 +100,7 @@ public class Server extends JFrame
 			{
 				showMessage(" \n Something went wrong. ");
 			}
+			
 		}while(!message.equals("CLIENT - END"));
 		
 	}
