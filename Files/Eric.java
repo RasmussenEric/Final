@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
+import javax.imageio.*;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import java.awt.geom.*;
@@ -17,6 +18,7 @@ public class Eric extends JFrame
 	private ObjectInputStream input;
 	private ServerSocket serverPort;
 	private Socket connection;
+	private PictureBox test;
 	
 	//create text box, setsize and setvisible
 	//listen for actions
@@ -44,6 +46,9 @@ public class Eric extends JFrame
 		add(new JScrollPane(chatArea));
 		setSize(600,300);
 		setVisible(true);
+	
+		test = new PictureBox("Pictures");
+	
 	}
 	
 	
@@ -69,7 +74,7 @@ public class Eric extends JFrame
 				}
 				catch(EOFException end)
 				{
-					Display("\nServer was closed.");
+					showMessage("\nServer was closed.");
 				}
 				finally
 				{
@@ -89,11 +94,11 @@ public class Eric extends JFrame
 	public void Waiting() throws IOException
 	{
 		
-		Display("Waiting for a connection...");
+		showMessage("Waiting for a connection...");
 		//.accept waits for a connection to be given, makes new socket
 		connection = serverPort.accept();
 		//gets IP and converts it to a string
-		Display("\nConnecting to " + connection.getInetAddress().getHostName());
+		showMessage("\nConnecting to " + connection.getInetAddress().getHostName());
 		
 	}
 	
@@ -107,7 +112,7 @@ public class Eric extends JFrame
 		output = new ObjectOutputStream(connection.getOutputStream());
 		output.flush();
 		input = new ObjectInputStream(connection.getInputStream());
-		Display("Setup Complete.");
+		showMessage("Setup Complete.");
 		
 	}
 	
@@ -125,11 +130,11 @@ public class Eric extends JFrame
 			{
 				//recieves object from client, turns it into a string and displays it
 				message = (String) input.readObject();
-				Display("\n" + message);
+				showMessage("\n" + message);
 			}
 			catch(ClassNotFoundException classNotFoundException)
 			{
-				Display("Can't recieve message.");
+				showMessage("Can't recieve message.");
 			}
 			
 			
@@ -154,7 +159,7 @@ public class Eric extends JFrame
 			//{
 				//pos = lower.indexOf(".") + 1;
 				//String ending = message.substring(pos, message.length() - 1);
-				//Display(ending);
+				//showMessage(ending);
 			//}	
 		//}
 		
@@ -175,17 +180,17 @@ public class Eric extends JFrame
 			if(message.indexOf("sendpicture") != 1)
 			{
 				
-				sendPicture(message)
+				sendPicture(message);
 
 			}
-			else
-			{
-				//sends message
-				output.writeObject("SERVER - " + message);
-				output.flush();
-				Display("\nSERVER - " + message);
-				
-			}
+			
+			
+			//sends message
+			output.writeObject("SERVER - " + message);
+			output.flush();
+			showMessage("\nSERVER - " + message);
+			
+			
 		}
 		catch(IOException ioException)
 		{
@@ -194,7 +199,7 @@ public class Eric extends JFrame
 
 	}
 	
-	public void Display(String message)
+	public void showMessage(String message)
 	{
 		SwingUtilities.invokeLater(
 			new Runnable()
@@ -218,27 +223,47 @@ public class Eric extends JFrame
 			if(split[i].indexOf(".jpg") != -1)
 			{
 				String fileName = split[i];
+				loadPicture(fileName);
 			}
 		}
 		
-		loadPicture(fileName);
+	
 		
 	}
 	
-	public void loadPicture(String file name)
-	{
+	public void loadPicture(String fileName)
+	{	
+		BufferedImage image = null;
+	
+		//try
+		//{
+		//	image = ImageIO.read(new File(fileName))
+		//
+		///}
+		//catch(IOException ioException)
+		//{
+		//	showMessage("Couldn't load picture.");
+		//}
+		
+		//or use this code
+		
 		try
 		{
-			BufferedImage image = new BufferedImage(new File(fileName));
+			URL url = new URL("C:/Users/rasmussene7186/Desktop/Test/Final/Files/Pictures/" + fileName);
+			image = ImageIO.read(url);
+			
 		}
 		catch(IOException ioException)
 		{
-			Display("Couldn't load picture.");
+			showMessage("Couldn't load picture.");
 		}
 		
+		//Graphics g = image.getGraphics();
+		//g.drawImage(image, 0, 0, null);
+		//Graphics.drawImage(image, 0, 0, null);
 		
-		
-		
+		//Graphics2D graphics2d = bufferedImage.createGraphics();
+		//graphics2d.drawImage(image,0,0,null);
 	}
 	
 	
@@ -246,7 +271,7 @@ public class Eric extends JFrame
 	
 	public void closeProgram()
 	{
-		Display("\n Closing connections... \n");
+		showMessage("\n Closing connections... \n");
 		userInput.setEditable(false);
 		try
 		{
