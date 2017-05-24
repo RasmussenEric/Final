@@ -180,7 +180,7 @@ public class Eric extends JFrame
 			if(message.indexOf("sendpicture") != 1)
 			{
 				
-				sendPicture(message);
+				test.sendPicture(message);
 
 			}
 			
@@ -213,27 +213,27 @@ public class Eric extends JFrame
 		
 	}
 	
-	public void sendPicture(String message)
+	//public void sendPicture(String message)
 	{
 		
-		String[] split = message.split(" ");
+		//String[] split = message.split(" ");
 		
-		for(int i = 0; i < split.length; i++)
-		{
-			if(split[i].indexOf(".jpg") != -1)
-			{
-				String fileName = split[i];
-				loadPicture(fileName);
-			}
-		}
+		//for(int i = 0; i < split.length; i++)
+		//{
+		//	if(split[i].indexOf(".jpg") != -1)
+		//	{
+		//		String fileName = split[i];
+		//		loadPicture(fileName);
+		//	}
+		//}
 		
 	
 		
 	}
 	
-	public void loadPicture(String fileName)
+	//public void loadPicture(String fileName)
 	{	
-		BufferedImage image = null;
+		//BufferedImage image = null;
 	
 		//try
 		//{
@@ -247,16 +247,16 @@ public class Eric extends JFrame
 		
 		//or use this code
 		
-		try
-		{
-			URL url = new URL("C:/Users/rasmussene7186/Desktop/Test/Final/Files/Pictures/" + fileName);
-			image = ImageIO.read(url);
-			
-		}
-		catch(IOException ioException)
-		{
-			showMessage("Couldn't load picture.");
-		}
+		//try
+		//{
+		//	URL url = new URL("C:/Users/rasmussene7186/Desktop/Test/Final/Files/Pictures/" + fileName);
+		//	image = ImageIO.read(url);
+		//	
+		//}
+		//catch(IOException ioException)
+		//{
+		//	showMessage("Couldn't load picture.");
+		//}
 		
 		//Graphics g = image.getGraphics();
 		//g.drawImage(image, 0, 0, null);

@@ -8,45 +8,30 @@ import javax.imageio.*;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import java.awt.geom.*;
+import java.io.File;
+import java.awt.Graphics;
+import java.io.FileReader;
 
-public class PictureBox extends JFrame
+public class PictureBox extends JPanel
 {
 
-	private JTextArea chatArea;
+	private JFrame frame;
+
 	
 	public PictureBox(String name)
 	{
 		
-		super(name);
-		setSize(400, 400);
-		setVisible(true);
+		frame = new JFrame();
 		
-		chatArea = new JTextArea(400, 400);
-		add(new JScrollPane(chatArea));
-		
-	}
-	
-	public void Start()
-	{
-		
-		
-		
-		//while(true)
-		//{
-			
-			//Waiting();
-			
-		//}
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setTitle(name);
+		frame.setSize(400, 400);
+		frame.setVisible(true);
+		//frame.add(new PictureBox(name));
 
-		
 	}
 	
-	public void Waiting()
-	{
-		showMessage("Waiting...");
-	}
-	
-	public void sendPicture(String message)
+	public void sendPicture(String message) throws IOException
 	{
 		
 		String[] split = message.split(" ");
@@ -56,7 +41,15 @@ public class PictureBox extends JFrame
 			if(split[i].indexOf(".jpg") != -1)
 			{
 				String fileName = split[i];
-				loadPicture(fileName);
+				
+				try
+				{
+					loadPicture(fileName);
+				}
+				catch(IOException e)
+				{
+					System.out.println("Can't call loadPicture");
+				}
 			}
 		}
 		
@@ -64,55 +57,54 @@ public class PictureBox extends JFrame
 		
 	}
 	
-	public void loadPicture(String fileName)
-	{	
-		BufferedImage image = null;
+	public void loadPicture(String fileName) throws IOException
+	{
 	
 		try
 		{
-			image = ImageIO.read(new File(fileName));
-			System.out.println("Loaded Correctly")
+			
+			File f = new File("C:\\Users\\rasmussene7186\\Desktop\\Test\\Final\\Files\\Pictures\\snake.jpg");
+			
+			BufferedImage image = new BufferedImage(400, 400, BufferedImage.TYPE_INT_ARGB);
+			
+			image = ImageIO.read(f);
+			
+			System.out.println("Loaded Correctly");
+			
+			Graphics g = image.getGraphics();
+			
+			paintComponent(g, image);
+			
+			//g.drawImage(image, 0, 0, null);
+			
+			//JPanel pane = new JPanel();
+			//{
+			//	Graphics g = image.getGraphics();
+			//	g.drawImage(image, 0, 0, null);
+			//}
+			//frame.add(pane);
+			
+			
 		}
 		catch(IOException ioException)
 		{
-			showMessage("Couldn't load picture.");
+			ioException.printStackTrace();
+			System.out.println("Couldn't load picture.");
 		}
-		
-		//or use this code
-		
-		//try
-		//{
-		//	URL url = new URL("C:/Users/rasmussene7186/Desktop/Test/Final/Files/Pictures/" + fileName);
-		//	image = ImageIO.read(url);
-		//	
-		//}
-		//catch(IOException ioException)
-		//{
-		//	showMessage("Couldn't load picture.");
-		//}
+
 		
 		//Graphics g = image.getGraphics();
+		//super.paintComponent(g);
 		//g.drawImage(image, 0, 0, null);
-		//Graphics.drawImage(image, 0, 0, null);
 		
-		//Graphics2D graphics2d = bufferedImage.createGraphics();
-		//graphics2d.drawImage(image,0,0,null);
 	}
 	
-	
-	public void showMessage(String message)
+	public void paintComponent(Graphics g, BufferedImage image)
 	{
-		SwingUtilities.invokeLater(
-			new Runnable()
-			{
-				public void run()
-				{
-					chatArea.append(message);
-				}
-			}
-		);
+		
+		g.drawImage(image, 0, 0, null);
+		repaint();
 		
 	}
-	
 	
 }
