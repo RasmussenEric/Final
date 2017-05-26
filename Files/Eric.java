@@ -47,7 +47,6 @@ public class Eric extends JFrame
 		setSize(600,300);
 		setVisible(true);
 	
-		test = new PictureBox("Pictures");
 	
 	}
 	
@@ -180,6 +179,30 @@ public class Eric extends JFrame
 			if(message.indexOf("sendpicture") != 1)
 			{
 				
+				String[] split = message.split(" ");
+				String fileName = "";
+		
+				for(int i = 0; i < split.length; i++)
+				{
+					if(split[i].indexOf(".jpg") != -1)
+					{
+						fileName = split[i];
+				
+						/*
+						try
+						{
+							loadPicture(fileName);
+						}
+						catch(IOException e)
+						{
+							System.out.println("Can't call loadPicture");
+						}
+						*/
+					}
+				}
+			
+		
+				test = new PictureBox(fileName);
 				test.sendPicture(message);
 
 			}

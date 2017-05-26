@@ -4,8 +4,8 @@ public class ClientTest
 {
 	public static void main(String[]args)
 	{
-		FinalClient y;
-		y = new FinalClient("localhost");
+		Client y;
+		y = new Client("localhost");
 		y.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		y.startRunning();
 	}
