@@ -8,6 +8,7 @@ import javax.imageio.*;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import java.awt.geom.*;
+import java.awt.Image;
 
 public class Eric extends JFrame
 {
@@ -18,7 +19,6 @@ public class Eric extends JFrame
 	private ObjectInputStream input;
 	private ServerSocket serverPort;
 	private Socket connection;
-	private PictureBox test;
 	
 	//create text box, setsize and setvisible
 	//listen for actions
@@ -146,37 +146,9 @@ public class Eric extends JFrame
 	
 	public void sendMessage(String message)
 	{
-		
-		//if(message.indexOf(".") != -1)
-		//{
-			//String lower = message.toLowerCase();
-			//String[] check = message.split(".");
-			//int pos = 0;
-			//System.out.println(check.length);
-	
-			//if(check[1].equals("jpg"))
-			//{
-				//pos = lower.indexOf(".") + 1;
-				//String ending = message.substring(pos, message.length() - 1);
-				//showMessage(ending);
-			//}	
-		//}
-		
 		try
 		{
-			
-			//System.out.print(message);
-			
-			//if(message.indexOf(".") != -1)
-			//{
-
-				//int pos = message.indexOf("jpg");
-				//String ending = message.substring(pos, message.length());
-				//System.out.println(ending);
-				
-			//}
-			
-			if(message.indexOf("sendpicture") != 1)
+			if(message.indexOf("sendpicture") != -1)
 			{
 				
 				String[] split = message.split(" ");
@@ -188,25 +160,15 @@ public class Eric extends JFrame
 					{
 						fileName = split[i];
 				
-						/*
-						try
-						{
-							loadPicture(fileName);
-						}
-						catch(IOException e)
-						{
-							System.out.println("Can't call loadPicture");
-						}
-						*/
 					}
 				}
 			
-		
-				test = new PictureBox(fileName);
-				test.sendPicture(message);
-
-			}
+				PictureBox test = new PictureBox(fileName);
+				//test.sendPicture(message);
 			
+				output.writeObject(test);
+				output.flush();
+			}
 			
 			//sends message
 			output.writeObject("SERVER - " + message);
@@ -235,62 +197,6 @@ public class Eric extends JFrame
 		);
 		
 	}
-	
-	//public void sendPicture(String message)
-	{
-		
-		//String[] split = message.split(" ");
-		
-		//for(int i = 0; i < split.length; i++)
-		//{
-		//	if(split[i].indexOf(".jpg") != -1)
-		//	{
-		//		String fileName = split[i];
-		//		loadPicture(fileName);
-		//	}
-		//}
-		
-	
-		
-	}
-	
-	//public void loadPicture(String fileName)
-	{	
-		//BufferedImage image = null;
-	
-		//try
-		//{
-		//	image = ImageIO.read(new File(fileName))
-		//
-		///}
-		//catch(IOException ioException)
-		//{
-		//	showMessage("Couldn't load picture.");
-		//}
-		
-		//or use this code
-		
-		//try
-		//{
-		//	URL url = new URL("C:/Users/rasmussene7186/Desktop/Test/Final/Files/Pictures/" + fileName);
-		//	image = ImageIO.read(url);
-		//	
-		//}
-		//catch(IOException ioException)
-		//{
-		//	showMessage("Couldn't load picture.");
-		//}
-		
-		//Graphics g = image.getGraphics();
-		//g.drawImage(image, 0, 0, null);
-		//Graphics.drawImage(image, 0, 0, null);
-		
-		//Graphics2D graphics2d = bufferedImage.createGraphics();
-		//graphics2d.drawImage(image,0,0,null);
-	}
-	
-	
-	
 	
 	public void closeProgram()
 	{

@@ -12,26 +12,27 @@ import java.io.File;
 import java.awt.Graphics;
 import java.io.FileReader;
 import java.awt.Color;
+import java.awt.Image;
 
 public class PictureBox extends JComponent
 {
 
 	private JFrame frame;
 	private BufferedImage image;
-	//private Image image;
 	private JButton b1;
 	private JLabel l1;
-	//private Eric test2;
 	private String fileName = "";
 	
 	public PictureBox(String fileName) 
 	{
 		
 		frame = new JFrame();
+		//frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 		
 		frame.setLayout(new BorderLayout());
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setTitle("Pictures");
+		
+		frame.setTitle("Server Picture");
 		frame.setSize(400, 400);
 		frame.setVisible(true);
 		
@@ -52,6 +53,9 @@ public class PictureBox extends JComponent
 			{
 				
 				System.out.println("Refreshing");
+				
+				frame.add(background);
+				frame.repaint();
 				
 			}
 			
@@ -152,10 +156,4 @@ public class PictureBox extends JComponent
 		super.paintComponent(g);
 		g.drawImage(image, 0, 0, null);
 	}
-	
-	
-	
-	
-	
-	
 }

@@ -3,6 +3,11 @@ import java.net.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.awt.image.BufferedImage;
+import javax.imageio.*;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import java.awt.Image;
 
 
 public class FinalClient extends JFrame
@@ -73,13 +78,64 @@ public class FinalClient extends JFrame
 	private void whileChatting() throws IOException
 	{
 		ableToType(true);
-		do{
-			try{
-				message = (String) input.readObject();
-				showMessage("\n" + message);
-			}catch(ClassNotFoundException classNotfoundException){
-				showMessage("\n CAN'T DISPLAY MESSAGE");
+		do
+		{	
+			try
+			{
+				if(input.readObject().getClass().equals(PictureBox.class))
+				{
+					//try and accept PictureBox object
+					try
+					{		
+						//PictureBox test = (PictureBox) input.readObject();
+						
+						BufferedImage img = ImageIO.read(ImageIO.createImageInputStream(input));
+						
+						JFrame frame = new JFrame();
+						
+						frame.setLayout(new BorderLayout());
+						frame.setTitle("Client Picture");
+						frame.setSize(400, 400);
+						frame.setVisible(true);
+						
+						JLabel background = new JLabel(new ImageIcon(img));
+
+						frame.add(background);
+
+						background.setLayout(new FlowLayout());
+						
+						
+						
+						
+						
+						
+						
+						
+					}
+					catch(Exception e)
+					{
+						System.out.println("Well that didn't work now did it.");
+					}
+				}
+				else
+				{
+					try
+					{
+						message = (String) input.readObject();
+						showMessage("\n" + message);
+					}
+					catch(ClassNotFoundException classNotfoundException)
+					{
+						showMessage("\n CAN'T DISPLAY MESSAGE");
+					}
+				}
 			}
+			catch(ClassNotFoundException e)
+			{
+				showMessage("Ruh Roh");
+			}
+			
+			
 		}while(!message.equals("SERVER - END"));
 	}
 	
