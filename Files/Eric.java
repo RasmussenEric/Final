@@ -9,6 +9,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import java.awt.geom.*;
 import java.awt.Image;
+import java.awt.Color;
 
 public class Eric extends JFrame
 {
@@ -19,6 +20,8 @@ public class Eric extends JFrame
 	private ObjectInputStream input;
 	private ServerSocket serverPort;
 	private Socket connection;
+	private PictureBox reciever;
+	private BufferedImage img;
 	
 	//create text box, setsize and setvisible
 	//listen for actions
@@ -45,6 +48,8 @@ public class Eric extends JFrame
 		chatArea = new JTextArea();
 		add(new JScrollPane(chatArea));
 		setSize(600,300);
+		//Color mix = new Color(150, 60, 255);
+		//chatArea.setBackground(mix);
 		setVisible(true);
 	
 	
@@ -127,9 +132,71 @@ public class Eric extends JFrame
 		{
 			try
 			{
-				//recieves object from client, turns it into a string and displays it
+				/*
+				if(input.readObject().getClass().equals(BufferedImage.class))
+				{
+					//try and accept PictureBox object
+					try
+					{		
+						
+						BufferedImage img = (BufferedImage) ImageIO.read(ImageIO.createImageInputStream(input));
+
+						PictureBox reciever = new PictureBox(img);
+						
+					}
+					catch(Exception e)
+					{
+						System.out.println("Well that didn't work now did it.");
+					}
+				}
+				else
+				{
+					try
+					{
+						message = (String) input.readObject();
+						showMessage("\n" + message);
+					}
+					catch(ClassNotFoundException classNotfoundException)
+					{
+						showMessage("\n CAN'T DISPLAY MESSAGE");
+					}
+				}
+				*/
+				
+				
+				
+				
+				
+				
 				message = (String) input.readObject();
-				showMessage("\n" + message);
+				
+				if(message.indexOf("sendpicture") == -1)
+				{
+					try
+					{
+						message = (String) input.readObject();
+						showMessage("\n" + message);
+					}
+					catch(Exception e)
+					{
+						System.out.println("Damn.");
+					}
+					
+				}
+				else
+				{
+					
+					img = (BufferedImage) ImageIO.read(ImageIO.createImageInputStream(input));
+					reciever = new PictureBox(img);
+				
+					message = "Picture Sent";
+					
+				}
+
+				
+				
+				
+				
 			}
 			catch(ClassNotFoundException classNotFoundException)
 			{
@@ -138,7 +205,7 @@ public class Eric extends JFrame
 			
 			
 			//typing "end" will end the connection
-		}while(!message.equals("Client - End"));
+		}while(!message.equals("Client - END"));
 		
 		
 		
@@ -164,9 +231,15 @@ public class Eric extends JFrame
 				}
 			
 				PictureBox test = new PictureBox(fileName);
-				//test.sendPicture(message);
-			
-				output.writeObject(test);
+				
+				output.flush();
+
+				File f = new File("C:\\Users\\rasmussene7186\\Desktop\\Test\\Final\\Files\\Pictures\\" + fileName);
+				
+				BufferedImage send = (ImageIO.read(f));
+				
+				ImageIO.write(send, "JPG", output);
+				
 				output.flush();
 			}
 			
@@ -174,8 +247,6 @@ public class Eric extends JFrame
 			output.writeObject("SERVER - " + message);
 			output.flush();
 			showMessage("\nSERVER - " + message);
-			
-			
 		}
 		catch(IOException ioException)
 		{
