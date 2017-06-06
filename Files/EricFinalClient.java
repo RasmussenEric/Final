@@ -15,13 +15,14 @@ public class EricFinalClient extends JFrame
 	private JTextField userText;
 	private JTextArea chatWindow;
 	private ObjectOutputStream output;
+	private ObjectOutputStream outputPictures;
 	private ObjectInputStream input;
+	private ObjectInputStream inputPictures;
 	private String message = "";
 	private String serverIP;
 	private Socket connection;
 	private PictureBox reciever;
 	private BufferedImage img;
-	private int counter = 0;
 	
 	//constructor
 	public EricFinalClient(String host)
@@ -72,8 +73,11 @@ public class EricFinalClient extends JFrame
 	private void setupStreams() throws IOException
 	{
 		output = new ObjectOutputStream(connection.getOutputStream());
+		outputPictures = new ObjectOutputStream(connection.getOutputStream());
 		output.flush();
+		outputPictures.flush();
 		input = new ObjectInputStream(connection.getInputStream());
+		inputPictures = new ObjectInputStream(connection.getInputStream());
 		showMessage("\n Connected");
 	}
 	
@@ -85,12 +89,27 @@ public class EricFinalClient extends JFrame
 		{	
 			try
 			{
-				if(counter == 0)
+				
+				try
 				{
 					message = (String) input.readObject();
 				}
+				catch(EOFException e)
+				{
+					System.out.println("Not String");
+				}
+				catch(ClassCastException e)
+				{
+					//img = (BufferedImage) ImageIO.read(ImageIO.createImageInputStream(inputPictures));
+					message = "placeholder";
+				}
+				catch(OptionalDataException e)
+				{
+					System.out.println("Still not string");
+					message = "placeholder";
+				}
 				
-				if(message.indexOf("sendpicture") == -1)
+				if(message.indexOf("sendpicture") == -1 && !message.equals("placeholder"))
 				{
 					try
 					{
@@ -109,9 +128,6 @@ public class EricFinalClient extends JFrame
 					img = (BufferedImage) ImageIO.read(ImageIO.createImageInputStream(input));
 					reciever = new PictureBox(img);
 					
-					message = "Picture Sent";
-					
-					counter = 1;
 				}
 			
 			
@@ -120,7 +136,7 @@ public class EricFinalClient extends JFrame
 			}
 			catch(Exception e)
 			{
-				showMessage("Ruh Roh");
+				e.printStackTrace();
 			}
 			
 			
@@ -163,15 +179,15 @@ public class EricFinalClient extends JFrame
 			
 				PictureBox test = new PictureBox(fileName);
 				
-				output.flush();
+				outputPictures.flush();
 				
 				File f = new File("C:\\Users\\rasmussene7186\\Desktop\\Test\\Final\\Files\\Pictures\\" + fileName);
 				
 				BufferedImage send = (ImageIO.read(f));
 				
-				ImageIO.write(send, "JPG", output);
+				ImageIO.write(send, "JPG", outputPictures);
 				
-				output.flush();
+				outputPictures.flush();
 			}
 			
 			//sends message

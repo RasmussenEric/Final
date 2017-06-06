@@ -17,7 +17,9 @@ public class Eric extends JFrame
 	private JTextField userInput;
 	private JTextArea chatArea;
 	private ObjectOutputStream output;
+	private ObjectOutputStream outputPictures;
 	private ObjectInputStream input;
+	private ObjectInputStream inputPictures;
 	private ServerSocket serverPort;
 	private Socket connection;
 	private PictureBox reciever;
@@ -71,9 +73,9 @@ public class Eric extends JFrame
 				{
 			
 			
-					Waiting();
-					setupConnection();
-					Typing();
+					connectToServer();
+					setupStreams();
+					whileChatting();
 			
 				}
 				catch(EOFException end)
@@ -95,7 +97,7 @@ public class Eric extends JFrame
 	}
 	
 	//waits for a connection attempt
-	public void Waiting() throws IOException
+	public void connectToServer() throws IOException
 	{
 		
 		showMessage("Waiting for a connection...");
@@ -107,21 +109,24 @@ public class Eric extends JFrame
 	}
 	
 	//establishes streams
-	public void setupConnection() throws IOException
+	public void setupStreams() throws IOException
 	{
 		
 		//establishes streams using ports/sockets given
 		//input takes in what they say, output gives what we say
 		
 		output = new ObjectOutputStream(connection.getOutputStream());
+		outputPictures = new ObjectOutputStream(connection.getOutputStream());
 		output.flush();
+		outputPictures.flush();
 		input = new ObjectInputStream(connection.getInputStream());
+		inputPictures = new ObjectInputStream(connection.getInputStream());
 		showMessage("Setup Complete.");
 		
 	}
 	
 	//need method for connection while typing
-	public void Typing() throws IOException
+	public void whileChatting() throws IOException
 	{
 		//tests streams
 		userInput.setEditable(true);
@@ -167,10 +172,26 @@ public class Eric extends JFrame
 				
 				
 				
+				try
+				{
+					message = (String) input.readObject();
+				}
+				catch(EOFException e)
+				{
+					System.out.println("Not String");
+				}
+				catch(ClassCastException e)
+				{
+					//img = (BufferedImage) ImageIO.read(ImageIO.createImageInputStream(inputPictures));
+					message = "placeholder";
+				}
+				catch(OptionalDataException e)
+				{
+					System.out.println("Still not string");
+					message = "placeholder";
+				}
 				
-				message = (String) input.readObject();
-				
-				if(message.indexOf("sendpicture") == -1)
+				if(message.indexOf("sendpicture") == -1 & !message.equals("placeholder"))
 				{
 					try
 					{
@@ -188,8 +209,6 @@ public class Eric extends JFrame
 					
 					img = (BufferedImage) ImageIO.read(ImageIO.createImageInputStream(input));
 					reciever = new PictureBox(img);
-				
-					message = "Picture Sent";
 					
 				}
 
