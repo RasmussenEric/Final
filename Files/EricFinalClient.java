@@ -12,8 +12,8 @@ import java.awt.Image;
 
 public class EricFinalClient extends JFrame
 {
-	private JTextField userText;
-	private JTextArea chatWindow;
+	private JTextField userInput;
+	private JTextArea chatArea;
 	private ObjectOutputStream output;
 	private ObjectOutputStream outputPictures;
 	private ObjectInputStream input;
@@ -23,27 +23,81 @@ public class EricFinalClient extends JFrame
 	private Socket connection;
 	private PictureBox reciever;
 	private BufferedImage img;
+	private final JPanel p = new JPanel();
+	private final JPanel subP = new JPanel();
+	private JFrame f = new JFrame();
+	private JFrame f2 = new JFrame();
 	
 	//constructor
 	public EricFinalClient(String host)
 	{
-		super("Client");
-		serverIP = host;
-		userText = new JTextField();
-		userText.setEditable(false);
-		userText.addActionListener(
-			new ActionListener(){
-				public void actionPerformed(ActionEvent event){
+		chatArea = new JTextArea();
+		f.setLayout(new BorderLayout());
+		f.setTitle("Font");
+		p.add(new JLabel("What Font would you like to use?"));
+		
+		JButton TNR = new JButton("Times New Roman");
+		TNR.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				chatArea.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+				f.setVisible(false);
+				f2.setVisible(true);
+			}
+		});
+		
+		JButton arial = new JButton("Arial");
+		arial.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				chatArea.setFont(new Font("Elephant", Font.PLAIN, 16));
+				f.setVisible(false);
+				f2.setVisible(true);
+			}
+		});
+		
+		JButton comicSans = new JButton("Comic Sans");
+		comicSans.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				chatArea.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
+				f.setVisible(false);
+				f2.setVisible(true);
+			}
+		});
+		
+		subP.add(TNR);
+		subP.add(arial);
+		subP.add(comicSans);
+		
+		f.add(p, BorderLayout.CENTER);
+		f.add(subP, BorderLayout.SOUTH);
+		f.setSize(600, 150);
+		f.setVisible(true);
+		f.setResizable(false);
+		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		f2.setVisible(false);
+		
+		
+		f2.setTitle("AP Compsci Messenger (Client)");
+		userInput = new JTextField();
+		userInput.setEditable(false);
+		userInput.addActionListener(
+			new ActionListener()
+			{
+				public void actionPerformed(ActionEvent event)
+				{
 					sendMessage(event.getActionCommand());
-					userText.setText("");
+					userInput.setText("");
 				}
 			}
 		);
-		add(userText, BorderLayout.SOUTH);
-		chatWindow = new JTextArea();
-		add(new JScrollPane(chatWindow), BorderLayout.CENTER);
-		setSize(600, 300);
-		setVisible(true);
+		
+		//adds a border the size of userInput
+		f2.add(userInput, BorderLayout.SOUTH);
+		//makes chat box, sets pixels, makes it scrollable
+		//chatArea.setFont(new Font("Serif", Font.BOLD, 18));
+		f2.add(new JScrollPane(chatArea));
+		f2.setSize(600,300);
+		f2.setResizable(false);
+		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
 	public void startRunning()
@@ -65,7 +119,7 @@ public class EricFinalClient extends JFrame
 	private void connectToServer() throws IOException
 	{
 		showMessage("Attempting connection... \n");
-		connection = new Socket(InetAddress.getByName(serverIP), 7777);
+		connection = new Socket(InetAddress.getByName(serverIP), 4567);
 		showMessage("Connected to: " + connection.getInetAddress().getHostName());
 	}
 	
@@ -181,7 +235,7 @@ public class EricFinalClient extends JFrame
 				
 				outputPictures.flush();
 				
-				File f = new File("C:\\Users\\rasmussene7186\\Desktop\\Test\\Final\\Files\\Pictures\\" + fileName);
+				File f = new File("C:\\Users\\Eric R\\Documents\\GitHub\\Final\\Files\\" + fileName);
 				
 				BufferedImage send = (ImageIO.read(f));
 				
@@ -189,15 +243,18 @@ public class EricFinalClient extends JFrame
 				
 				outputPictures.flush();
 			}
+			else
+			{
+				//sends message
+				output.writeObject("CLIENT - " + message);
+				output.flush();
+				showMessage("\nCLIENT - " + message);
+			}
 			
-			//sends message
-			output.writeObject("CLIENT - " + message);
-			output.flush();
-			showMessage("\nCLIENT - " + message);
 		}
 		catch(IOException ioException)
 		{
-			chatWindow.append("Can't send message.");
+			chatArea.append("Can't send message.");
 		}
 
 	}
@@ -208,7 +265,7 @@ public class EricFinalClient extends JFrame
 		SwingUtilities.invokeLater(
 			new Runnable(){
 				public void run(){
-					chatWindow.append(message);
+					chatArea.append(message);
 				}
 			}
 		);
@@ -220,7 +277,7 @@ public class EricFinalClient extends JFrame
 		SwingUtilities.invokeLater(
 			new Runnable(){
 				public void run(){
-					userText.setEditable(tof);
+					userInput.setEditable(tof);
 				}
 			}
 		);

@@ -24,13 +24,62 @@ public class Eric extends JFrame
 	private Socket connection;
 	private PictureBox reciever;
 	private BufferedImage img;
+	private final JPanel p = new JPanel();
+	private final JPanel subP = new JPanel();
+	private JFrame f = new JFrame();
+	private JFrame f2 = new JFrame();
 	
 	//create text box, setsize and setvisible
 	//listen for actions
 	public Eric()
 	{
-	
-		super("AP Compsci Messenger");
+		
+		chatArea = new JTextArea();
+		f.setLayout(new BorderLayout());
+		f.setTitle("Font");
+		p.add(new JLabel("What Font would you like to use?"));
+		
+		JButton TNR = new JButton("Times New Roman");
+		TNR.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				chatArea.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+				f.setVisible(false);
+				f2.setVisible(true);
+			}
+		});
+		
+		JButton arial = new JButton("Arial");
+		arial.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				chatArea.setFont(new Font("Elephant", Font.PLAIN, 16));
+				f.setVisible(false);
+				f2.setVisible(true);
+			}
+		});
+		
+		JButton comicSans = new JButton("Comic Sans");
+		comicSans.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				chatArea.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
+				f.setVisible(false);
+				f2.setVisible(true);
+			}
+		});
+		
+		subP.add(TNR);
+		subP.add(arial);
+		subP.add(comicSans);
+		
+		f.add(p, BorderLayout.CENTER);
+		f.add(subP, BorderLayout.SOUTH);
+		f.setSize(600, 150);
+		f.setVisible(true);
+		f.setResizable(false);
+		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		f2.setVisible(false);
+		
+		
+		f2.setTitle("AP Compsci Messenger");
 		userInput = new JTextField();
 		userInput.setEditable(false);
 		userInput.addActionListener(
@@ -42,19 +91,26 @@ public class Eric extends JFrame
 					userInput.setText("");
 				}
 			}
+		
 		);
 		
+		/*
 		//adds a border the size of userInput
 		add(userInput, BorderLayout.SOUTH);
 		//makes chat box, sets pixels, makes it scrollable
 		chatArea = new JTextArea();
 		add(new JScrollPane(chatArea));
 		setSize(600,300);
-		//Color mix = new Color(150, 60, 255);
-		//chatArea.setBackground(mix);
 		setVisible(true);
-	
-	
+		*/
+		
+		f2.add(userInput, BorderLayout.SOUTH);
+		//makes chat box, sets pixels, makes it scrollable
+		//chatArea.setFont(new Font("Serif", Font.BOLD, 18));
+		f2.add(new JScrollPane(chatArea));
+		f2.setSize(600,300);
+		f2.setResizable(false);
+		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
 	
@@ -66,7 +122,7 @@ public class Eric extends JFrame
 		try
 		{
 			
-			serverPort = new ServerSocket(7777, 10);
+			serverPort = new ServerSocket(4567, 10);
 			while(true)
 			{
 				try
@@ -136,42 +192,7 @@ public class Eric extends JFrame
 		do
 		{
 			try
-			{
-				/*
-				if(input.readObject().getClass().equals(BufferedImage.class))
-				{
-					//try and accept PictureBox object
-					try
-					{		
-						
-						BufferedImage img = (BufferedImage) ImageIO.read(ImageIO.createImageInputStream(input));
-
-						PictureBox reciever = new PictureBox(img);
-						
-					}
-					catch(Exception e)
-					{
-						System.out.println("Well that didn't work now did it.");
-					}
-				}
-				else
-				{
-					try
-					{
-						message = (String) input.readObject();
-						showMessage("\n" + message);
-					}
-					catch(ClassNotFoundException classNotfoundException)
-					{
-						showMessage("\n CAN'T DISPLAY MESSAGE");
-					}
-				}
-				*/
-				
-				
-				
-				
-				
+			{	
 				try
 				{
 					message = (String) input.readObject();
@@ -253,7 +274,7 @@ public class Eric extends JFrame
 				
 				output.flush();
 
-				File f = new File("C:\\Users\\rasmussene7186\\Desktop\\Test\\Final\\Files\\Pictures\\" + fileName);
+				File f = new File("C:\\Users\\Eric R\\Documents\\GitHub\\Final\\Files\\" + fileName);
 				
 				BufferedImage send = (ImageIO.read(f));
 				
@@ -261,11 +282,14 @@ public class Eric extends JFrame
 				
 				output.flush();
 			}
-			
-			//sends message
-			output.writeObject("SERVER - " + message);
-			output.flush();
-			showMessage("\nSERVER - " + message);
+			else
+			{
+				//sends message
+				output.writeObject("SERVER - " + message);
+				output.flush();
+				showMessage("\nSERVER - " + message);
+			}	
+
 		}
 		catch(IOException ioException)
 		{
